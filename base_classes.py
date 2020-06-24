@@ -10,27 +10,29 @@ class Character:
         self.magic_armor = magic_armor
         self.hp_max = hp_max
         self.level = level
-        self.inv = {"pocion":3}
         self.wins = 0
-        self.gold = 100 
+        self.gold = 100
     
-    def _baseattack(self, target):
+    def _physicalattack(self, target):
         target.hp -= (self.attack + randint(0, 5)) * self.level
+
+    def _magicattack(self, target):
+        target.hp -= (self.magic_attack + randint(0, 5)) * self.level
+
             
 
 class Monster(Character):
     
-    def __init__(self, name, attack, magic_attack, armor, magic_armor, hp_max, exp, level):
-        super().__init__(name, attack, magic_attack, armor, magic_armor, hp_max, exp, level)
-        self.level = 1
-
+    def __init__(self, name, attack, magic_attack, armor, magic_armor, hp_max, level, exp, hp):
+        super().__init__(name, attack, magic_attack, armor, magic_armor, hp_max, level)
+        self.exp = exp
+        self.hp = hp
 
 
 class Player(Character):
 
     def __init__(self, name, attack, magic_attack, armor, magic_armor, hp_max, level, exp, mana_max, mana, crit_chance, crit_damage, speed, hp):
         super().__init__(name, attack, magic_attack, armor, magic_armor, hp_max, level)
-        self.level = 1
         self.exp = exp
         self.mana = mana
         self.mana_max = mana_max
@@ -40,9 +42,12 @@ class Player(Character):
         self.hp = hp
         self.inventory = []
 
+    def __str__(self):
+        return f"Name: {self.name}\nAttack: {self.attack}\nMagic Attack: {self.magic_attack}\nArmor: {self.armor}\nMagic Armor: {self.magic_armor}\nHP: {self.hp}/{self.hp_max}\nMana: {self.mana}/{self.mana_max}\nCritical Chance: {self.crit_chance}\nCritical Damange: {self.crit_damage}\nSpeed: {self.speed}\nLevel: {self.level}\nExperience: {self.exp}"
+
     def show_inventory(self):
         for item in self.inventory:
-            f"{item}"
+            print(item)
 
     def equip_item(self, item):
         # Si el item no está equipado
@@ -63,7 +68,7 @@ class Player(Character):
             print("Este item ya esta equipado.")
     
     def use_item(self, item):
-        if item.type == "C": # Consumable
+        if item._type == "C": # Consumable
             self.inventory # remover item del inventario (completar cuando tenga internet, no recuerdo como remover de listas)
             self.mana += item.mana
             self.hp += item.hp
